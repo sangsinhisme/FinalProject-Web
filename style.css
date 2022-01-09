@@ -41,7 +41,7 @@
     --background-color: #00563F;
     --text-color: #2B2E52;
     --text-color-2: #415275;
-    --task-new: #F3F3F3;
+    --task-new: #AFB7C2;
     --task-progress: #EBC38B;
     --task-waiting:  #E6956E;
     --task-rejected: #BB061C;
@@ -79,7 +79,7 @@ h1 {
 }
 
 .resetpass {
-    justify-content: flex-end; 
+    justify-content: flex-end;
     margin: auto 10px;
     text-decoration: underline;
     cursor: pointer;
@@ -97,6 +97,15 @@ h1 {
 }
 
 .alert-danger{
+    text-align: center;
+    width: 90%;
+    height: 40px;
+    padding: 10px 14px;
+    margin: 10px 5% 2% 5%;
+    border-radius: 5px;
+}
+
+.alert-success{
     text-align: center;
     width: 90%;
     height: 40px;
@@ -295,11 +304,31 @@ h1 {
     text-decoration: none;
 }
 
+.container-fluid .management .right .management-item .task{
+    color: var(--dark-green);
+}
+
+.container-fluid .management .right .management-item .task-right{
+    float: right;
+    margin-left: auto;
+    margin-right: 10px;
+    color: var(--black);
+    text-decoration: none;
+    font-family: "PoppinsVN-500", sans-serif;
+}
+
+.container-fluid .management .right .management-item .task-label{
+    color: var(--black);
+    font-family: PoppinsVN-600, sans-serif;
+    text-decoration: none;
+}
+
 
 .container-fluid .management-item .task-box{
     display: flex;
     align-items: center;
     margin-bottom: 4px;
+    margin-right: 10px;
 }
 
 
@@ -337,7 +366,6 @@ h1 {
 
 .container-fluid .management .management-item a{
     font-family: PoppinsVN-500, sans-serif;
-    color: var(--black);
 }
 
 .dot {
@@ -375,9 +403,11 @@ h1 {
     height: 45px;
     width: 45px;
     border-radius: 50%;
-    display: inline-block;
+    display: block;
     margin-right: 10px;
     margin-left: 10px;
+    text-align: right;
+    float: left;
 }
 
 .form-group .task-label{
@@ -538,15 +568,4 @@ input[type="file"]{
     padding: 6px 15px;
     cursor: pointer;
     box-shadow: 0 1px 1px 0 rgb(0 0 0 / 3%);
-}
-
-.descrip {
-    margin-top: 0.75rem;
-    display: block;
-}
-
-.descrip div {
-    color: #999;
-    font-size: .875rem;
-    line-height: 1.25rem;
 }

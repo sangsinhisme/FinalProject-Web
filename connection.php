@@ -13,4 +13,12 @@ $password = '';
         die(json_encode(array('status' => false, 'data' => 'Unable to connect: ' . $ex->getMessage())));
     }
 
+    function error_response($code, $message){
+        $res = array();
+        $res['code'] = $code;
+        $res['message'] = $message;
+
+        die(json_encode($res));
+    }
+
 ?>

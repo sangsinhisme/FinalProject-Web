@@ -1,9 +1,9 @@
 <?php
-//    session_start();
-//    if (!isset($_SESSION['user']) || $_SESSION['activated'] == 0) {
-//        header('Location: login.php');
-//        exit();
-//    }
+    session_start();
+    if (!isset($_SESSION['user']) || $_SESSION['activated'] == 0) {
+        header('Location: login.php');
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
