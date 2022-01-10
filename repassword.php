@@ -62,7 +62,7 @@
     <div class="row">
 
         <div class="col-md-6 col-sm-12 mb-3">
-            <h1 class="text-center mt-5 mb-2">Đổi mật khẩu</h1>
+            <h1 class="text-center mt-3 mb-2">Đổi mật khẩu</h1>
             <p class="text-center text-secondary px-sm-2">Vui lòng đổi mật khẩu trước khi tiến hành đăng nhập.</p>
             <form method="post" class="px-4 px-sm-4 px-m-5 px-lg-4 pt-3">
                 <div class="renew">
@@ -73,18 +73,17 @@
                         <input id="validation" name="pass-confirm" type="password" class="form-input" placeholder="Nhập lại mật khẩu mới">
                     </div>
                 </div>
-                <?php
-                if (!empty($error)) {
-                    echo "<div class='alert-danger'>$error</div>";
-                }
-                ?>
                 <div class="input-group custom-control custom-checkbox pt-2">
                     <div class="custom-button text-right">
                         <button name="logout" class="btn btn-logout">Đăng xuất</button>
                         <button name="login" class="btn btn-success btn-login">Đăng nhập</button>
                     </div>
-                    
                 </div>
+                <?php
+                if (!empty($error)) {
+                    echo "<div class='alert-danger'>$error</div>";
+                }
+                ?>
             </form>
         </div>
 

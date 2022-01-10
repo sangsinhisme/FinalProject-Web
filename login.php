@@ -79,7 +79,7 @@
 <body>
 <div class="container-fluid align-items-center min-vh-100">
     <div class="row">
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-6 col-sm-12 mt-1">
             <img  class="img" src="images/login.svg" alt="login"/>
         </div>
 
@@ -93,16 +93,18 @@
                 <div class="form-group">
                     <input value="<?= $pass ?>" id="password" name="pass" type="password" class="form-input" placeholder="Mật khẩu">
                 </div>
-                <?php
-                if (!empty($error)) {
-                    echo "<div class='alert-danger'>$error</div>";
-                }
-                ?>
                 <div class="input-group custom-control custom-checkbox text-left">
+                    <input type="checkbox" class="custom-control-input" id="remember">
+                    <label class="custom-control-label text-secondary" for="remember">Remember login</label>
                     <div class="custom-button text-right">
                         <button name="login" class="btn btn-success btn-login">Đăng nhập</button>
                     </div>
                 </div>
+                <?php
+                if (!empty($error)) {
+                    echo "<div id='alert' class='alert-danger'>$error</div>";
+                }
+                ?>
             </form>
 
         </div>
