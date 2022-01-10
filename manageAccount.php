@@ -1,9 +1,9 @@
 <?php
-//    session_start();
-//    if (!isset($_SESSION['user']) || $_SESSION['activated'] == 0) {
-//        header('Location: login.php');
-//        exit();
-//    }
+   session_start();
+   if (!isset($_SESSION['user']) || $_SESSION['activated'] == 0) {
+       header('Location: login.php');
+       exit();
+   }
 ?>
 
 <!DOCTYPE html>
@@ -13,6 +13,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link 
+         rel="stylesheet"
+         href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+         integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -29,10 +33,10 @@
         <div class="management col-lg-2 col-md-3 col-sm-4 col-5">
             <div class="management-item">
                 <button id="add-employee-btn" class="button-add text-center" data-toggle="modal">Thêm nhân viên</button>
-                <select class="form-select button-notice text-center">
-                    <option>Toàn bộ nhân viên</option>
-                    <option>Theo phòng ban</option>
-                </select>
+                <div class="search-group has-search">
+                    <span class="fa fa-search form-icon-search"></span>
+                    <input type="search" id="search-input" name=search class="form-control" placeholder="Search.."/>
+                </div>
             </div>
         </div>
         <div class="management col-lg-6 col-md-7 col-sm-8 col-7" style="padding-left: 20px">
@@ -57,7 +61,7 @@
 </div>
 
 <!-- Get Employee dialog -->
-<div id="info-employee-dialog" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div id="info-employee-dialog" class="modal hide fade bd-example-modal-lg" tabindex="-1" role="dialog" data-focus-on="input:first" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="header" style="margin: 30px 60px 10px 60px;">
@@ -71,31 +75,49 @@
                     <div class="info-item-wrap">
                         <div class="info-item">
                             <label>Tài khoản</label>
-                            <p class="context employee-info-username" style="font-size: 22px;">Tonyteo</p>
+                            <p class="context employee-info-username">Tonyteo</p>
                         </div>
                     </div>
                     <div class="info-item-wrap">
                         <div class="info-item">
                             <label>Mật khẩu</label>
-                            <p class="context" style="font-size: 22px;">*********</p>
+                            <p class="context">*********</p>
                         </div>
                     </div>
                     <div class="info-item-wrap">
                         <div class="info-item">
                             <label>Họ và tên</label>
-                            <p class="context employee-info-name" style="font-size: 22px;">My Den</p>
+                            <p class="context employee-info-name"></p>
+                        </div>
+                    </div>
+                    <div class="info-item-wrap">
+                        <div class="info-item">
+                            <label>Giới tính</label>
+                            <p class="context employee-info-gender"></p>
+                        </div>
+                    </div>
+                    <div class="info-item-wrap">
+                        <div class="info-item">
+                            <label>Số điện thoại</label>
+                            <p class="context employee-info-phone"></p>
+                        </div>
+                    </div>
+                    <div class="info-item-wrap">
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p class="context employee-info-mail"></p>
                         </div>
                     </div>
                     <div class="info-item-wrap">
                         <div class="info-item">
                             <label>Chức vụ</label>
-                            <p class="context employee-info-position" style="font-size: 22px;">Làm lính</p>
+                            <p class="context employee-info-position"></p>
                         </div>
                     </div>
                     <div class="info-item-wrap">
                         <div class="info-item">
                             <label>Phòng</label>
-                            <p class="context employee-info-department" style="font-size: 22px;">Ăn chơi</p>
+                            <p class="context employee-info-department"></p>
                         </div>
                     </div>
                 </div>
@@ -114,9 +136,10 @@
   </div>
 </div>
 
+
 <!-- Add new dialog -->
 <div class="modal fade" id="new-employee-dialog">
-        <div class="modal-dialog">
+    <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-content">
@@ -125,12 +148,29 @@
                 </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="task-label" for="name-task">Tên đăng nhập</label>
+                    <label class="task-label" for="username">Tên đăng nhập</label>
                     <input id="username" type="text" class="form-input" placeholder="Nhập tên tài khoản">
                 </div>
                 <div class="form-group">
                     <label class="task-label" for="name">Họ và tên</label>
                     <input id="name" name="name" type="text" class="form-input" placeholder="Nhập họ và tên">
+                </div>
+                <div class="form-group">
+                    <label class="task-label">Giới tính</label>
+                    <div style="font-size: 16px;margin: 1px 5% 0 5%;">
+                        <input id="male" type="radio" name="gender" value="1">
+                        <label style="margin: 0"  for="male">Nam</label>
+                        <input id="female" type="radio" name="gender" value="2">
+                        <label style="margin: 0" for="female">Nữ</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="task-label" for="phone">Số điện thoại</label>
+                    <input id="phone" name="phone" type="tel" class="form-input" placeholder="Nhập số điện thoại">
+                </div>
+                <div class="form-group">
+                    <label class="task-label" for="mail">Email</label>
+                    <input id="mail" name="mail" type="text" class="form-input" placeholder="Nhập email">
                 </div>
                 <div class="form-group">
                     <label class="task-label" for="position">Chức vụ</label>
@@ -157,30 +197,29 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Reset Dialog -->
-    <div id="resetPass" class="modal fade" role="dialog">
-        <div class="modal-dialog">
 
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <hp class="modal-title">Reset Password</hp>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc muốn reset <strong class="reset-user"></strong> ?</p>
-                </div>
-                <div id="reset-password-error" class='alert alert-danger' style='text-align: center;margin: 10px 50px;display: none;'></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger resetpass-btn">Reset</button>
-                </div>
-
+<!-- Reset Dialog -->
+<div id="reset-password-dialog" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reset Password</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-
+            <div class="modal-body">
+                <p>Bạn có chắc muốn reset <strong class="reset-user"></strong> ?</p>
+            </div>
+            <div id="reset-password-error" class='alert alert-danger' style='text-align: center;display: none;'></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-success resetpass-btn">Reset</button>
+            </div>
         </div>
     </div>
+</div>
 
 
 <script type="text/javascript" src="./main.js"></script>

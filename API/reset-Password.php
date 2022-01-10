@@ -33,6 +33,4 @@
     catch(PDOException $ex){
         die(json_encode(array('code' => 1, 'message' => $ex->getMessage())));
     }
-
-
 ?>

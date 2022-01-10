@@ -19,26 +19,16 @@
         try{
             $stmt = $dbCon->prepare($sql);
             $stmt->execute(array($file_name,$username));
-    
-            $count = $stmt->rowCount();
-            die(json_encode(array('code' => 1, 'message' => $file_name.$username.$file_tmp)));
-            if ($count == 1) {
-                if (!file_exists($filename)) {
-                    move_uploaded_file($file_tmp,"./avatar/".$file_name);
-                }
-                else {
-                    unlink($file_tmp);
-                }
-                $_SESSION['avatar'] = $file_name;
-                die(json_encode(array('code' => 0, 'avatar' => $file_name)));
+            if (!file_exists($filename)) {
+                move_uploaded_file($file_tmp,"./avatar/".$file_name);
             }
-            else {
-                die(json_encode(array('code' => 1, 'message' => 'Upload failed')));
-            }
+            $_SESSION['avatar'] = $file_name;
+            die(json_encode(array('code' => 0, 'avatar' => $file_name)));
         }
         catch(PDOException $ex){
             die(json_encode(array('code' => 1, 'message' => $ex->getMessage())));
         }
          
      }
+
 ?>

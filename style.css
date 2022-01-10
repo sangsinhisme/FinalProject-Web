@@ -473,7 +473,7 @@ h1 {
 }
 
 .save-btn {
-    margin-bottom: 3.75rem;
+    margin-bottom: 2.5rem;
     padding-left: calc(20% + 1.25rem);
 }
 
@@ -549,4 +549,45 @@ input[type="file"]{
     color: #999;
     font-size: .875rem;
     line-height: 1.25rem;
+}
+
+#add-department-btn {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.search-group {
+    width: 100%;
+    margin-top: 10px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    display: flex;
+}
+/* #appoint-department-btn {
+    margin-top: 15px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+
+#dismiss-department-btn {
+    margin-top: 15px;
+    width: 100%;
+    border-radius: 8px;
+} */
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.form-icon-search {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
 }

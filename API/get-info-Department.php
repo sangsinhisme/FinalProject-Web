@@ -13,19 +13,22 @@
       
     $id = $_GET['id'];
 
-    $sql = 'SELECT username,name,gender,phone,mail,position,department,avatar FROM account where id = ?';
+    $sql = 'SELECT departmentName,description,room FROM department where id = ?';
 
     try{
         $stmt = $dbCon->prepare($sql);
         $stmt->execute(array($id));
+        if ($stmt->rowCount() > 0) {
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            die(json_encode(array('code' => 0, 'data' => $data)));
+        }
+        else {
+            die(json_encode(array('code' => 1, 'message' => 'Error')));
+        }
     }
     catch(PDOException $ex){
         die(json_encode(array('code' => 1, 'message' => $ex->getMessage())));
     }
-
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    die(json_encode(array('code' => 0, 'data' => $data)));
 
 
 ?>

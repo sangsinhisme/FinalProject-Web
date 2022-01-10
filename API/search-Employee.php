@@ -7,25 +7,28 @@
         die(json_encode(array('code' => 4, 'message' => 'This API only supports GET')));
     }
 
-    if (!isset($_GET['id']) ) {
+    if (!isset($_GET['name'])) {
         die(json_encode(array('code' => 1, 'message' => 'Parameters not valid')));
     }
-      
-    $id = $_GET['id'];
-
-    $sql = 'SELECT username,name,gender,phone,mail,position,department,avatar FROM account where id = ?';
-
+    
+    $name = '%'.$_GET['name'].'%';
+    $sql = 'SELECT * FROM account WHERE role != 3 and name like ?';
+    //print_r($name);
     try{
         $stmt = $dbCon->prepare($sql);
-        $stmt->execute(array($id));
+        $stmt->execute(array($name));
     }
     catch(PDOException $ex){
-        die(json_encode(array('code' => 1, 'message' => $ex->getMessage())));
+        die(json_encode(array('status' => false, 'data' => $ex->getMessage())));
     }
 
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = array();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
 
-    die(json_encode(array('code' => 0, 'data' => $data)));
+    {
+        $data[] = $row;
+    }
 
+    echo json_encode(array('status' => true, 'data' => $data));
 
 ?>

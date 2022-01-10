@@ -3,10 +3,10 @@
     $error = '';
     $pass = '';
     $pass_confirm = '';
-//    if (!isset($_SESSION['user'])) {
-//        header('Location: login.php');
-//        exit();
-//    }
+   if (!isset($_SESSION['user'])) {
+       header('Location: login.php');
+       exit();
+   }
     if (isset($_POST['logout'])) {
         session_destroy();
         header("Location: login.php");
@@ -32,6 +32,7 @@
                 $stmt->execute(array(password_hash($pass,PASSWORD_DEFAULT),1,$_SESSION['user']));     
                 $count = $stmt->rowCount();
                 if ($count == 1) {
+                    $_SESSION['activated'] = 1;
                     header('Location: index-ql.php');
                     exit();    
                 }

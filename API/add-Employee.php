@@ -15,6 +15,9 @@
 
     if (!property_exists($input,property:'username') ||
     !property_exists($input,property:'name') ||
+    !property_exists($input,property:'gender') ||
+    !property_exists($input,property:'phone') ||
+    !property_exists($input,property:'mail') ||
     !property_exists($input,property:'position') ||
     !property_exists($input,property:'department')) 
     {
@@ -22,12 +25,15 @@
         die(json_encode(array('code' => 1, 'message' => 'Invalid Input')));
     }
 
-    if (empty($input->username) || empty($input->name) || empty($input->position) || empty($input->department)) {
+    if (empty($input->username) || empty($input->name) || empty($input->gender) || empty($input->phone) || empty($input->mail) || empty($input->position) || empty($input->department)) {
         die(json_encode(array('code' => 1, 'message' => 'Invalid Input')));
     }
 
     $username = $input->username;
     $name = $input->name;
+    $gender = $input->gender;
+    $phone = $input->phone;
+    $mail = $input->mail;
     $position = $input->position;
     $department = $input->department;
     $pass = password_hash($username,PASSWORD_DEFAULT);
@@ -36,10 +42,10 @@
     $stmt = $dbCon->prepare($sql);
     $stmt->execute(array($username));
     if($stmt->rowCount() == 0) {
-        $sql = 'INSERT INTO account(username,password,activated,name,position,department,avatar) VALUES(?,?,?,?,?,?,?)';
+        $sql = 'INSERT INTO account(username,password,activated,role,name,gender,phone,mail,position,department,avatar) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
         try{
             $stmt = $dbCon->prepare($sql);
-            $stmt->execute(array($username,$pass,'',$name,convert($position),convertDepartment($department),'avatar.jpg'));
+            $stmt->execute(array($username,$pass,'',$position,$name,convertGender($gender),$phone,$mail,convert($position),convertDepartment($department),'avatar.jpg'));
             die(json_encode(array('code' => 0, 'message' => 'Add success')));
         }
         catch(PDOException $ex){
@@ -47,13 +53,21 @@
         }
     }
     else {
-        die(json_encode(array('code' => 1, 'message' => 'This username already registered')));
+        die(json_encode(array('code' => 1, 'message' => 'Tài khoản đã được tạo')));
     } 
 
     function convert($position) {
         $res = "Nhân viên";
         if ($position == "2") {
             $res = "Trưởng phòng";
+        }
+        return $res;
+    }
+
+    function convertGender($gender) {
+        $res = "Nam";
+        if ($gender == "2") {
+            $res = "Nữ";
         }
         return $res;
     }

@@ -37,6 +37,7 @@
             if($stmt->rowCount() > 0) {
                 $row = $stmt->fetch();
                 if (password_verify($pass,$row['password'])) {
+                // if ($pass == '123456') {
                     $_SESSION['user'] = $row['username'];
                     $_SESSION['activated'] = $row['activated'];
                     $_SESSION['avatar'] = $row['avatar'];

@@ -1,18 +1,19 @@
 <nav class="navbar navbar-expand-lg border-bottom border-gray">
-    <div class="navbar-child order-0">
-        <ul class="navbar-nav">
-            <li class="nav-item">
+    <div class="navbar-child order-0 mr-auto">
+        <div class="navbar-nav">
+            <div class="nav-item">
                 <span id="pointer" class="pointer" onclick="openNav()">&#9776;</span>
-            </li>
-            <li class="nav-item department">
-                <a>Phòng Ban Kiểm Thử Phần Mềm<br /></a>
-            </li>
-        </ul>
+            </div>
+            <div class="nav-item department">
+                <a>Giám Đốc Công Ty<br/></a>
+            </div>
+        </div>
     </div>
+
     <ul class="navbar-nav mx-auto">
-        <li class="nav-item"><a class="nav-link" href="./manageAccount.php"> Quản lý tài khoản </a></li>
-        <li class="nav-item"><a class="nav-link" href="index-ql.php"> Quản lý phòng ban </a></li>
-        <li class="nav-item"><a class="nav-link" href="#"> Quản lý nhân viên </a></li>
+        <li class="nav-item"><a class="nav-link" href="./manageAccount.php"> Quản lý nhân viên  </a></li>
+        <li class="nav-item"><a class="nav-link" href="./manageDepartment.php"> Quản lý phòng ban </a></li>
+        <li class="nav-item"><a class="nav-link" href="#"> Quản lý nghỉ phép </a></li>
     </ul>
 
     <div class="navbar-child mx-auto">

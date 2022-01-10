@@ -2,7 +2,7 @@
     
     require_once ('../connection.php');
 
-    $sql = 'SELECT * FROM account WHERE role != 3';
+    $sql = 'SELECT * FROM department';
 
     try{
         $stmt = $dbCon->prepare($sql);
