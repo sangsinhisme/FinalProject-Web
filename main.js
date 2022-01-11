@@ -3,7 +3,7 @@
 window.onload = function() {
     if (window.location.href.indexOf('manageAccount.php') > -1) {
         loadEmployee()
-
+        // Search function
         $('#search-input').on('change', function () {
             $.ajax({
                 url: "./API/search-Employee.php",
@@ -50,31 +50,33 @@ window.onload = function() {
             $('#new-employee-dialog').modal({show: true});
             resetAddEmployee()
             $('#confirm-add').unbind().click(function () {
-            $.ajax({
-                    url: "./API/add-Employee.php",
-                    type: "post", //send it through get method
-                    contentType: 'application/json',
-                    dataType: "json",
-                    data: JSON.stringify({ 
-                        username: $('#username').val() ,
-                        name: $('#name').val() ,
-                        gender: $('input[name=gender]').val(),
-                        phone: $('#phone').val(),
-                        mail: $('#mail').val(),
-                        position: $('#position').val(),
-                        department: $('#department').val()
-                    }),
-                    success: function(respone) {
-                        if (respone.code == 0) {
-                            $('#new-employee-dialog').modal('toggle');
-                            loadEmployee()
+            if (validateAddEmployeeForm()) {
+                    $.ajax({
+                        url: "./API/add-Employee.php",
+                        type: "post", //send it through get method
+                        contentType: 'application/json',
+                        dataType: "json",
+                        data: JSON.stringify({ 
+                            username: $('#username').val() ,
+                            name: $('#name').val() ,
+                            gender: $('input[name="genderEmployee"]:checked').val(),
+                            phone: $('#phone').val(),
+                            mail: $('#mail').val(),
+                            position: $('#position').val(),
+                            department: $('#department').val()
+                        }),
+                        success: function(respone) {
+                            if (respone.code == 0) {
+                                $('#new-employee-dialog').modal('toggle');
+                                loadEmployee()
+                            }
+                            else {
+                                $('#add-employee-error').show()
+                                $('#add-employee-error').html(respone.message)
+                            }
                         }
-                        else {
-                            $('#add-employee-error').show()
-                            $('#add-employee-error').html(respone.message)
-                        }
-                    }
-                });
+                    });
+                }
             })
         });
     }
@@ -119,6 +121,7 @@ window.onload = function() {
         });
     }
 
+    // ManageDepartment
     if (window.location.href.indexOf('manageDepartment.php') > -1) {
         loadDepartment()
 
@@ -135,7 +138,8 @@ window.onload = function() {
             $('#new-department-dialog').modal({show: true});
             resetAddDepartment()
             $('#confirm-add-department').unbind().click(function () {
-            $.ajax({
+            if (validateAddDepartmentForm()) {
+                $.ajax({
                     url: "./API/add-Department.php",
                     type: "post", //send it through get method
                     contentType: 'application/json',
@@ -156,6 +160,7 @@ window.onload = function() {
                         }
                     }
                 });
+            }
             })
         });
 
@@ -163,23 +168,100 @@ window.onload = function() {
     
 }
 
+// Validate add employee form
+function validateAddEmployeeForm() {
+    let usernameRegex = /^[a-z0-9_-]{6,20}$/;
+    let checkUsername = document.getElementById("username").value.trim();
+    let checkName = document.getElementById("name").value;
+    let phone = $('#phone').val()
+    let mail = $('#mail').val()
+    let position = $('#position').val()
+    let department = $('#department').val()
+
+    if (checkUsername.length === 0 && checkName.length === 0) {
+       $('#add-employee-error').html("Vui lòng nhập đầy đủ thông tin").show()
+       return false
+    }else if(checkUsername.length === 0){
+        $('#add-employee-error').html("Vui lòng điền tên đăng nhập").show()
+        return false
+    }else  if(!checkUsername.match(usernameRegex)){
+        $('#add-employee-error').html("Tên đăng nhập không hợp lệ").show()
+        return false
+    }else if (checkName.length === 0){
+        $('#add-employee-error').html("Vui lòng nhập họ và tên nhân viên").show()
+        return false
+    }else if(!$('.genderEmploy').is(':checked')){
+        $('#add-employee-error').html("Vui lòng chọn giới tính").show()
+        return false
+    }else if(phone.length === 0){
+        $('#add-employee-error').html("Vui lòng điền số điện thoại").show()
+        return false
+    }else if(mail.length === 0){
+        $('#add-employee-error').html("Vui lòng điền email").show()
+        return false
+    }else if(position == undefined){
+        $('#add-employee-error').html("Vui lòng chọn vị trí").show()
+        return false
+    }else if(department == undefined){
+        $('#add-employee-error').html("Vui lòng chọn phòng ban").show()
+        return false
+    }
+    return true
+}
+
+// Validate add department form
+function validateAddDepartmentForm() {
+    let name = $('#department-name').val()
+    let descripe = $('#describe-department').val()
+    let room = $('#number-room').val()
+
+    if(name.length === 0){
+        $('#add-department-error').html("Vui lòng điền tên phòng ban").show()
+        return false
+    }else if (descripe.length === 0){
+        $('#add-department-error').html("Vui lòng nhập mô tả").show()
+        return false
+    }else if (room.length === 0){
+        $('#add-department-error').html("Vui lòng nhập số phòng").show()
+        return false
+    }
+    return true
+}
+
 // Function reset add employee dialog
 function resetAddEmployee() {
     $('#add-employee-error').hide()
-    $('#username').val("") ,
-    $('#name').val("") ,
-    $('input[name=gender]').val(""),
-    $('#phone').val(""),
-    $('#mail').val(""),
-    $('#position').val(""),
+    $('#username').val("") 
+    $('#name').val("") 
+    //$('.genderEmploy').val("")
+    $('input[name="genderEmployee"]:checked').prop('checked', false)
+    $('#phone').val("")
+    $('#mail').val("")
+    $('#position').val("")
+    $.ajax({
+        url: "./API/get-Departments.php", //Change your localhost link
+        type: "get", //send it through get method
+        dataType: "json",
+        success: function(data) {
+            $('#department .department-option').remove();
+            if (data.status == true) {
+                data.data.forEach(department => {
+                    $('#department').append(`<option class="department-option" value="${department.departmentName}">${department.departmentName}</option>`);
+                });
+            }
+            else {
+                $('#add-employee-error').html("Không thể load các phòng").show()
+            }
+        }
+    });
     $('#department').val("")
 }
 
 // Function reset add department dialog
 function resetAddDepartment() {
     $('#add-department-error').hide()
-    $('#department-name').val(''),
-    $('#describe-department').val(''),
+    $('#department-name').val('')
+    $('#describe-department').val('')
     $('#number-room').val('')
 }
 

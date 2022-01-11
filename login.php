@@ -48,7 +48,7 @@
                     }
                     else {
                         $_SESSION['role'] = $row['role'];
-                        header('Location: index-ql.php');
+                        header('Location: manageAccount.php');
                         exit();
                     }
                 }

@@ -158,10 +158,10 @@
                 <div class="form-group">
                     <label class="task-label">Giới tính</label>
                     <div style="font-size: 16px;margin: 1px 5% 0 5%;">
-                        <input id="male" type="radio" name="gender" value="1">
+                        <input class="genderEmploy" id="male" type="radio" name="genderEmployee" value="1">
                         <label style="margin: 0"  for="male">Nam</label>
-                        <input id="female" type="radio" name="gender" value="2">
-                        <label style="margin: 0" for="female">Nữ</label>
+                        <input class="genderEmploy" style="margin-left: 10px;" id="female" type="radio" name="genderEmployee" value="2">
+                        <label style="margin-left: 0;" for="female">Nữ</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -182,9 +182,9 @@
                 <div class="form-group">
                     <label class="task-label" for="department">Phòng/Ban</label>
                     <select id="department" name="department" class="form-input" style="padding: 2px 14px">
-                        <option value="1">Công nghệ thông tin</option>
-                        <option value="2">Kế toán</option>
-                        <option value="3">Nhân sự</option>
+                        <!-- <option value="1">Phát triển phần mềm</option>
+                        <option value="2">Kiểm thử phần mềm</option>
+                        <option value="3">Triển khai phần mềm</option> -->
                     </select>
                 </div>
                 <div id="add-employee-error" class='alert alert-danger' style='text-align: center;margin: 0 23px;display:none'></div>
