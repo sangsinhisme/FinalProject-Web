@@ -1,0 +1,11 @@
+- Đảm bảo mọi thông tin quan trọng không bị rò rỉ hay đánh cắp. 
+Thông tin chỉ được phép truy cập bởi những người đã được cấp phép.
+- Đảm bảo thông tin không bị thay đổi hoặc chỉ được phép chỉnh sửa bởi 
+người có thẩm quyền. Ngoài ra, tính toàn vẹn còn đảm bảo thông tin vẫn 
+còn chính xác khi được lưu trữ hay truyền đi.
+- Đảm bảo thông tin có thể được truy xuất bởi những người có quyền bất 
+cứ khi nào họ muốn.
+
+
+Để tiến hành các hoạt động bảo mật trên mô hình client-server trước tiên 
+cần hiểu rõ cách thức thức hoạt động, ưu và nhược điểm một cách chi tiết

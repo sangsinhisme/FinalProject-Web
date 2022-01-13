@@ -41,6 +41,7 @@
                     $_SESSION['user'] = $row['username'];
                     $_SESSION['activated'] = $row['activated'];
                     $_SESSION['avatar'] = $row['avatar'];
+                    $_SESSION['department'] = $row['department'];
                     if ($row['activated'] == 0) {
                         $_SESSION['role'] = $row['role'];
                         header('Location: repassword.php');
@@ -48,7 +49,7 @@
                     }
                     else {
                         $_SESSION['role'] = $row['role'];
-                        header('Location: manageAccount.php');
+                        header('Location: index.php');
                         exit();
                     }
                 }

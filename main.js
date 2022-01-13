@@ -1,4 +1,3 @@
-
 // Onload window event
 window.onload = function() {
     if (window.location.href.indexOf('manageAccount.php') > -1) {
@@ -101,8 +100,9 @@ window.onload = function() {
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", "./API/add-task.php", true);
                 xhr.send(data);
-                xhr.onload = function (e){
-                    let result = JSON.parse(this.response);
+                
+                xhr.onload = function (e){ 
+                    let result = JSON.parse(this.response); 
                     if (result.code === 0){
                         document.getElementById("task-form").reset();
                         $('#add-task-success').html(result.message)
@@ -118,6 +118,57 @@ window.onload = function() {
                     }
                 }
             })
+        });
+    }
+
+    // manage manager Absence
+    if (window.location.href.indexOf('manageAbsence.php') > -1) { 
+        loadmanagerAbsence()
+    }
+
+    // manage Employee Absence
+    if (window.location.href.indexOf('manageEmployee.php') > -1) { 
+        loademployeeAbsence()
+    }
+
+    /* manager absence */
+    if (window.location.href.indexOf('managerAbsence.php') > -1) {
+        loadAbsence()
+        $("#add-absence-btn").click(function () {
+            $('#add-absence-error').hide()
+            $('#new-absence-dialog').modal({show: true});
+            $('#confirm-add-absence').click(function () {
+                if (validateAddAbsenceForm()) {
+                    let data = new FormData();
+                    data.append("dayoff", $('#number-day-off').val());
+                    data.append("reason", $('#reason-absence').val());
+                    for ($i = 0; $i < $('#document-absence').prop("files").length; $i++){
+                        data.append("file-task[]", $('#document-absence').prop("files")[$i])
+                    }
+    
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("POST", "./API/request-Absence.php", true);
+                    xhr.send(data);
+                    
+                    xhr.onload = function (e){
+                        let result = JSON.parse(this.response); 
+                        if (result.code === 0){
+                            document.getElementById("absence-form").reset();
+                            $('#new-absence-dialog').modal('toggle');
+                            loadAbsence()
+                        }
+                        else {
+                            $('#add-absence-error').html(result.message).show()
+                        }
+                    }
+                }
+            })
+        });
+
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
     }
 
@@ -204,6 +255,21 @@ function validateAddEmployeeForm() {
         return false
     }else if(department == undefined){
         $('#add-employee-error').html("Vui lòng chọn phòng ban").show()
+        return false
+    }
+    return true
+}
+
+// Validate add absent form
+function validateAddAbsenceForm() {
+    let dayoff = $('#number-day-off').val()
+    let reason = $('#reason-absence').val()
+
+    if(dayoff.length === 0){
+        $('#add-absence-error').html("Vui lòng điền số ngày nghỉ").show()
+        return false
+    }else if (reason.length === 0){
+        $('#add-absence-error').html("Vui lòng nhập lí do").show()
         return false
     }
     return true
@@ -296,6 +362,194 @@ function getEmployee(e) {
                 $('.employee-info-position').html(respone.data.position)
                 $('.employee-info-department').html(respone.data.department)
                 $("#employee-avatar").attr("src",`./avatar/${respone.data.avatar}`);
+            }
+        }
+    });
+}
+
+// Function get Absence report
+function getAbsence(e) {
+    let absence = $(e).attr('id')
+    let selectedAbsence= JSON.parse(absence)
+    let color = ''
+    $('#info-absence-dialog').modal({show: true});
+    $.ajax({
+        type: "GET",
+        url: "./API/get-userAbsence.php?" + $.param({
+            "id": selectedAbsence
+        }),
+        success: function(respone) {
+            if (respone.code == 0) {
+                if (respone.data.status == 'waiting') {
+                    color = '#107baf'
+                }
+                else if (respone.data.status == 'approved') {
+                    color = 'green'
+                }
+                else {
+                    color = 'red'
+                }
+                $('.dayoff').html(respone.data.dayAbsence)
+                $('#reason-user-absence').html(respone.data.reason)
+                $('#file-absence').html(respone.data.file)
+                $('#file-absence').attr({
+                    "href":"./file_absence/"+respone.data.file,
+                    "download" : respone.data.file
+                })
+                $('.status-report').html(respone.data.status)
+                $(".status-report").css("color", color)
+                $('.report-date').html(respone.data.date)
+            }
+        }
+    });
+}
+
+// Function to approve absence
+function confirmApproved(e) {
+    let absence = $(e.parentNode.parentNode.parentNode).attr('data')
+    let selectedAbsence= JSON.parse(absence)
+    $('#approved-dialog').modal('show')
+    $('.user-absence').html(selectedAbsence.username)
+    $('#confirm-approve').click(function() {
+        $.ajax({
+            type: "GET",
+            url: "./API/approve-Absence.php",
+            data: {
+                id : selectedAbsence.id,
+                username: selectedAbsence.username
+            },
+            success: function(respone) {
+                if (respone.code == 0) {
+                    $('#approved-dialog').modal('toggle')
+                    loadmanagerAbsence()
+                }
+                else {
+                    $('#approve-absence-error').html(respone.message).show()
+                }
+            }
+        });
+    })
+}
+
+
+// Function to approve absence for employee
+function employeeApproved(e) {
+    let absence = $(e.parentNode.parentNode.parentNode).attr('data')
+    let selectedAbsence= JSON.parse(absence)
+    $('#approve-absence-error').hide()
+    $('#approved-dialog').modal('show')
+    $('.user-absence').html(selectedAbsence.username)
+    $('#confirm-approve').click(function() {
+        $.ajax({
+            type: "GET",
+            url: "./API/approve-Absence.php",
+            data: {
+                id : selectedAbsence.id,
+                username: selectedAbsence.username
+            },
+            success: function(respone) {
+                if (respone.code == 0) {
+                    $('#approved-dialog').modal('toggle')
+                    loademployeeAbsence()
+                }
+                else {
+                    $('#approve-absence-error').html(respone.message).show()
+                }
+            }
+        });
+    })
+}
+
+// Function to refuse absence
+function confirmRefused(e) {
+    let absence = $(e.parentNode.parentNode.parentNode).attr('data')
+    let selectedAbsence= JSON.parse(absence)
+    $('#refused-dialog').modal('show')
+    $('.user-absence').html(selectedAbsence.username)
+    $('#confirm-refused').click(function() {
+        $.ajax({
+            type: "GET",
+            url: "./API/refuse-Absence.php",
+            data: {
+                id : selectedAbsence.id,
+            },
+            success: function(respone) {
+                if (respone.code == 0) {
+                    $('#refused-dialog').modal('toggle')
+                    loadmanagerAbsence()
+                }
+                else {
+                    $('#approve-absence-error').html(respone.message).show()
+                }
+            }
+        });
+    })
+}
+
+// Function to refuse absence employee
+function employeeRefused(e) {
+    let absence = $(e.parentNode.parentNode.parentNode).attr('data')
+    let selectedAbsence= JSON.parse(absence)
+    $('#refused-dialog').modal('show')
+    $('.user-absence').html(selectedAbsence.username)
+    $('#confirm-refused').click(function() {
+        $.ajax({
+            type: "GET",
+            url: "./API/refuse-Absence.php",
+            data: {
+                id : selectedAbsence.id,
+            },
+            success: function(respone) {
+                if (respone.code == 0) {
+                    $('#refused-dialog').modal('toggle')
+                    loademployeeAbsence()
+                }
+                else {
+                    $('#approve-absence-error').html(respone.message).show()
+                }
+            }
+        });
+    })
+}
+
+// Function get manager absence report
+function getManagerAbsence(e) {
+    let absence = $(e.parentNode.parentNode.parentNode).attr('data')
+    let selectedAbsence= JSON.parse(absence)
+    $('#absence-manager-dialog').modal({show: true});
+    $.ajax({
+        type: "GET",
+        url: "./API/get-managerAbsence.php",
+        data: {
+            id : selectedAbsence.id,
+            username: selectedAbsence.username
+        },
+        success: function(respone) {
+            if (respone.code == 0) {
+                $('.absence-info').html(selectedAbsence.username)
+                $('.manager-absence-name').html(respone.data.name)
+                $('.manager-absence-department').html(respone.data.department)
+                $('.dayoff').html(respone.data.dayAbsence)
+                $('#reason-user-absence').html(respone.data.reason)
+                $('#file-absence').html(respone.data.file)
+                $('#file-absence').attr({
+                    "href":"./file_absence/"+respone.data.file,
+                    "download" : respone.data.file
+                })
+                $('.report-date').html(respone.data.date)
+            }
+            else if (respone.code == 2) {
+                $('.absence-info').html('')
+                $('.manager-absence-name').html('')
+                $('.manager-absence-department').html('')
+                $('.dayoff').html(respone.data.dayAbsence)
+                $('#reason-user-absence').html(respone.data.reason)
+                $('#file-absence').html(respone.data.file)
+                $('#file-absence').attr({
+                    "href":"./file_absence/"+respone.data.file,
+                    "download" : respone.data.file
+                })
+                $('.report-date').html(respone.data.date)
             }
         }
     });
@@ -793,6 +1047,132 @@ function loadManager() {
       });
 }
 
+// Function to get list of absences request
+function loadAbsence() {
+    let color = ''
+    let icon = ''
+    $.ajax({
+        url: "./API/get-userAbsences.php", //Change your localhost link
+        type: "get", //send it through get method
+        dataType: "json",
+        success: function(data) {
+            $('#list-absence .management-item').remove();
+            data.data.forEach(absence => {
+                if (absence.status == 'waiting') {
+                    color = '#107baf'
+                    icon = '<i style="font-weight:bold;color:#107baf;margin-left: 5px;">...</i>'
+                }
+                else if (absence.status == 'approved') {
+                    color = 'green'
+                    icon = '<i style="color:green;margin-left: 5px;" class="fas fa-check-circle"></i>'
+                }
+                else {
+                    color = 'red'
+                    icon = '<i style="color:red;margin-left: 5px;" class="fas fa-times-circle"></i>'
+                }
+                let absenceRow = $(`
+                <div class="management-item absence-report" onclick="getAbsence(this)">
+                    <div class="row">
+                        <div style="flex: 1;margin-left: 20px">
+                            <a class="task" style="font-size: 25px;text-transform: uppercase"><b style="color: var(--dark-green)">Số ngày nghỉ:</b> ${absence.dayAbsence}</a>
+                            <div class="">
+                                <a class="task text-decoration-none"><b style="color: var(--dark-green)">Lí do:</b> ${absence.reason}</a>
+                            </div>
+                        </div>
+                        <div class="m-3">
+                            <p style="color:${color};margin: 0;font-size: 22px;font-weight: bold;text-transform:uppercase">${absence.status}${icon} </p>
+                            
+                        </div>
+                    </div>
+                </div>
+                `)
+                absenceRow.attr('id',JSON.stringify(absence.id))
+                $('#list-absence').append(absenceRow)
+            });
+        }
+      });
+}
+
+// Function to get list of absences manager request
+function loadmanagerAbsence() {
+    $.ajax({
+        url: "./API/get-managerAbsences.php", //Change your localhost link
+        type: "get", //send it through get method
+        dataType: "json",
+        success: function(data) {
+            $('#list-manager-absence .management-item').remove();
+            data.data.forEach(absence => {
+                let absenceRow = $(`
+                <div class="management-item">
+                    <div class="row">
+                        <div style="flex: 1;margin-left: 20px">
+                            <a class="task" style="font-size: 25px;text-transform: uppercase"><b style="color: var(--dark-green)">Username:</b> ${absence.username}</a>
+                            <div class="">
+                                <a class="task text-decoration-none"><b style="color: var(--dark-green)">Ngày tạo:</b> ${absence.date}</a>
+                            </div>
+                        </div>
+                        <div style="margin: 20px">
+                            <a class="btn btn-primary border" style="color:white" onclick="getManagerAbsence(this)">
+                                <i class="fas fa-info"></i>
+                            </a>  
+                            <a class="btn btn-success border" style="color:white" onclick="confirmApproved(this)">
+                                <i class="fas fa-check"></i>
+                            </a>   
+                            <a class="btn btn-danger border" style="color:white" onclick= "confirmRefused(this)">
+                                <i class="fas fa-times"></i>
+                            </a>  
+                        </div>
+                    </div>
+                </div>
+                `)
+                absenceRow.attr('data', JSON.stringify(absence))
+                $('#list-manager-absence').append(absenceRow)
+            });
+        }
+      });
+}
+
+// Function to get list of absences employee request
+function loademployeeAbsence() {
+    $.ajax({
+        url: "./API/get-employeeAbsences.php", //Change your localhost link
+        type: "get", //send it through get method
+        dataType: "json",
+        success: function(data) {
+            if (data.status == true) {
+                $('#list-manager-absence .management-item').remove();
+                data.data.forEach(absence => {
+                    let absenceRow = $(`
+                    <div class="management-item">
+                        <div class="row">
+                            <div style="flex: 1;margin-left: 20px">
+                                <a class="task" style="font-size: 25px;text-transform: uppercase"><b style="color: var(--dark-green)">Username:</b> ${absence.username}</a>
+                                <div class="">
+                                    <a class="task text-decoration-none"><b style="color: var(--dark-green)">Ngày tạo:</b> ${absence.date}</a>
+                                </div>
+                            </div>
+                            <div style="margin: 20px">
+                                <a class="btn btn-primary border" style="color:white" onclick="getManagerAbsence(this)">
+                                    <i class="fas fa-info"></i>
+                                </a>  
+                                <a class="btn btn-success border" style="color:white" onclick="employeeApproved(this)">
+                                    <i class="fas fa-check"></i>
+                                </a>   
+                                <a class="btn btn-danger border" style="color:white" onclick= "employeeRefused(this)">
+                                    <i class="fas fa-times"></i>
+                                </a>  
+                            </div>
+                        </div>
+                    </div>
+                    `)
+                    absenceRow.attr('data', JSON.stringify(absence))
+                    $('#list-manager-absence').append(absenceRow)
+                });
+            }
+        }
+      });
+}
+
 let check = false;
 // Function open navbar-user-info
 document.addEventListener("click", (evt) => {
@@ -922,5 +1302,4 @@ function validateRepassword() {
         }
         return true
 }
-
 

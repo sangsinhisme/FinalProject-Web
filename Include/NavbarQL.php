@@ -13,7 +13,7 @@
     <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link" href="./manageAccount.php"> Quản lý nhân viên  </a></li>
         <li class="nav-item"><a class="nav-link" href="./manageDepartment.php"> Quản lý phòng ban </a></li>
-        <li class="nav-item"><a class="nav-link" href="#"> Quản lý nghỉ phép </a></li>
+        <li class="nav-item"><a class="nav-link" href="./manageAbsence.php"> Quản lý nghỉ phép </a></li>
     </ul>
 
     <div class="navbar-child mx-auto">

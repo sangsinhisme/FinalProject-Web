@@ -621,3 +621,13 @@ input[type="file"]{
     pointer-events: none;
     color: #aaa;
 }
+
+.number-dayAbsence {
+    margin: 10px 5px;
+    text-align: center;
+}
+
+.number-canAbsence {
+    margin: 10px 5px 0 5px;
+    text-align: center;
+}
