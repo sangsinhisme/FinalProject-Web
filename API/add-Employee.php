@@ -37,19 +37,52 @@
     $position = $input->position;
     $department = $input->department;
     $pass = password_hash($username,PASSWORD_DEFAULT);
+    $data = array();
 
     $sql = 'SELECT * FROM account WHERE username = ?';
     $stmt = $dbCon->prepare($sql);
     $stmt->execute(array($username));
     if($stmt->rowCount() == 0) {
-        $sql = 'INSERT INTO account(username,password,activated,role,name,gender,phone,mail,position,department,avatar) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-        try{
+        if ($position == "2") {
+            $sql = 'SELECT manager FROM department WHERE departmentName = ?';
             $stmt = $dbCon->prepare($sql);
-            $stmt->execute(array($username,$pass,'',$position,$name,convertGender($gender),$phone,$mail,convert($position),convertDepartment($department),'avatar.jpg'));
-            die(json_encode(array('code' => 0, 'message' => 'Add success')));
+            $stmt->execute(array($department));
+            $data = $stmt->fetch();  
+            if (strlen($data['manager']) == 0) {
+                // Update for department table
+                $sql = 'UPDATE department set manager = ? where departmentName = ?';
+                try{
+                    $stmt = $dbCon->prepare($sql);
+                    $stmt->execute(array($username,$department));
+                }
+                catch(PDOException $ex){
+                    die(json_encode(array('code' => 1, 'message' => $ex->getMessage())));
+                }
+                // Insert to account table
+                $sql = 'INSERT INTO account(username,password,activated,role,name,gender,phone,mail,position,department,avatar) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+                try{
+                    $stmt = $dbCon->prepare($sql);
+                    $stmt->execute(array($username,$pass,'',$position,$name,convertGender($gender),$phone,$mail,convert($position),$department,'avatar.jpg'));
+                    die(json_encode(array('code' => 0, 'message' => 'Add success')));
+                }
+                catch(PDOException $ex){
+                    die(json_encode(array('code' => 1, 'message' => 'Error')));
+                }
+            }
+            else {
+                die(json_encode(array('code' => 1, 'message' => 'Phòng này đã có trưởng phòng')));
+            }
         }
-        catch(PDOException $ex){
-            die(json_encode(array('code' => 1, 'message' => 'Error')));
+        else {
+            $sql = 'INSERT INTO account(username,password,activated,role,name,gender,phone,mail,position,department,avatar) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+            try{
+                $stmt = $dbCon->prepare($sql);
+                $stmt->execute(array($username,$pass,'',$position,$name,convertGender($gender),$phone,$mail,convert($position),$department,'avatar.jpg'));
+                die(json_encode(array('code' => 0, 'message' => 'Add success')));
+            }
+            catch(PDOException $ex){
+                die(json_encode(array('code' => 1, 'message' => 'Error')));
+            }
         }
     }
     else {
@@ -71,15 +104,14 @@
         }
         return $res;
     }
-
-    function convertDepartment($department) {
-        $res = "Nhân sự";
-        if ($department == "1") {
-            $res = "Công nghệ thông tin";
-        }
-        else if ($department == "2") {
-            $res = "Kế toán";
-        }
-        return $res;
-    }
+    // function convertDepartment($department) {
+    //     $res = "Triển khai phần mềm";
+    //     if ($department == "1") {
+    //         $res = "Phát triển phần mềm";
+    //     }
+    //     else if ($department == "2") {
+    //         $res = "Kiểm thử phần mềm";
+    //     }
+    //     return $res;
+    // }
 ?>

@@ -620,6 +620,7 @@ input[type="file"]{
     color: #aaa;
 }
 
+<<<<<<< HEAD
 
 /* NAV BAR */
 *{ margin: 0%; }
@@ -674,4 +675,14 @@ input[type="file"]{
 
 .sidenav .closebtn:hover {
     color: var(--dark-green);
+=======
+.number-dayAbsence {
+    margin: 10px 5px;
+    text-align: center;
+}
+
+.number-canAbsence {
+    margin: 10px 5px 0 5px;
+    text-align: center;
+>>>>>>> 7c347242a93b7e22a8b889db5d06bd339f0f82e1
 }

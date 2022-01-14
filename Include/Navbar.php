@@ -14,8 +14,8 @@
     </div>
     <ul id="primary-navigation" data-visible="false" class="primary-navigation flex navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link" href="index.php"> Tình trạng công việc </a> </li>
-        <li class="nav-item"><a class="nav-link" href="index.php"> Danh sách nghỉ phép </a></li>
-        <li class="nav-item"><a class="nav-link" href="index.php"> Quản lý nhân viên </a></li>
+        <li class="nav-item"><a class="nav-link" href="managerAbsence.php"> Danh sách nghỉ phép </a></li>
+        <li class="nav-item"><a class="nav-link" href="manageEmployee.php"> Quản lý nhân viên </a></li>
     </ul>
 
     <div class="navbar-child mx-auto">
