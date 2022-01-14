@@ -12,12 +12,13 @@
     }
 
     $id = $_POST['id'];
+    $process = $_POST['process'];
 
-    $sql = 'UPDATE `task` SET `process`= "task-canceled" WHERE id = ?';
+    $sql = 'UPDATE `task` SET `process`=? WHERE id = ?';
 
     try{
         $stmt = $dbCon->prepare($sql);
-        $stmt->execute(array($id));
+        $stmt->execute(array($process, $id));
     }
     catch(PDOException $ex){
         die(json_encode(array('code' => 1, 'message' => $ex->getMessage())));

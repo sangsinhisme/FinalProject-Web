@@ -1,10 +1,10 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 
-$host = 'localhost';
+$host = 'mysql-server';
 $dbName = 'project';
 $username = 'root';
-$password = '';
+$password = 'root';
 
     try{
         $dbCon = new PDO("mysql:host=".$host.";dbname=".$dbName, $username, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));

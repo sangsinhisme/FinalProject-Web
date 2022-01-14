@@ -55,7 +55,7 @@ window.onload = function() {
                     type: "post", //send it through get method
                     contentType: 'application/json',
                     dataType: "json",
-                    data: JSON.stringify({ 
+                    data: JSON.stringify({
                         username: $('#username').val() ,
                         name: $('#name').val() ,
                         gender: $('input[name=gender]').val(),
@@ -81,7 +81,12 @@ window.onload = function() {
 
     /* task index */
     if (window.location.href.indexOf('index.php') > -1) {
-        loadTask()
+        loadTask('task-canceled');
+    }
+
+    /* task index */
+    if (window.location.href.indexOf('index-ql.php') > -1) {
+        loadTask('')
         $("#add-task-btn").click(function () {
             $('#new-task-dialog').modal({show: true});
             $('#add-task').click(function () {
@@ -185,7 +190,7 @@ function resetAddDepartment() {
 
 /* Set the width of the side navigation to 250px */
 function openNav() {
-    document.getElementById("mySidenav").style.width = "310px";
+    document.getElementById("mySidenav").style.width = "300px";
 }
 
 /* Set the width of the side navigation to 0 */
@@ -376,7 +381,7 @@ function resetPass(e) {
 }
 
 let count_task_number = [0, 0, 0, 0, 0, 0];
-let task_convert = {"task-new": "Tác vụ mới", "task-process" : "Tác vụ đang được thực hiện", "task-waiting" : "Tác vụ đang chờ",
+let task_convert = {"task-new": "Tác vụ mới", "task-progress" : "Tác vụ đang thực hiện", "task-waiting" : "Tác vụ đang chờ",
 "task-rejected": "Tác vụ đã từ chối", "task-complete" : "Tác vụ đã hoàn thành", "task-canceled" : "Tác vụ đã hủy"};
 
 function count_task(process){
@@ -388,7 +393,7 @@ function count_task(process){
     if (process === "task-canceled") count_task_number[5] += 1;
 }
 
-function loadTask(){
+function loadTask(role_show){
     $.ajax({
         url: "./API/get-task-index.php",
         type: "get",
@@ -396,24 +401,27 @@ function loadTask(){
         success: function(data) {
             $('#task-list .management-item').remove();
             data.data.forEach(task => {
-                count_task(task.process)
-                let taskRow = $(`
-                <div class="management-item" onclick="getTask(this)">
-                    <div class="row" style="display: block">
-                        <span class="dot-work ${task.process}"></span>
-                        <span>
-                            <a class="task-label">${task.name}</a>
-                            <a class="task-right"style="display: none">${task.id}</a>
-                            <div class="task-box">
-                                <a class="task">To: ${task.employee}</a>
-                                <a class="task-right">${task.deadline}</a>
+                    count_task(task.process)
+                    if (task.process !== role_show){
+                        let taskRow = $(`
+                        <div class="management-item" onclick="getTask(this)">
+                            <div class="row" style="display: block">
+                                <span class="dot-work ${task.process}"></span>
+                                <span>
+                                    <a class="task-label">${task.name}</a>
+                                    <a class="task-right"style="display: none">${task.id}</a>
+                                    <div class="task-box">
+                                        <a class="task">To: ${task.employee}</a>
+                                        <a class="task-right">${task.deadline}</a>
+                                    </div>
+                                </span>
                             </div>
-                        </span>
-                    </div>
-                </div>
-                `)
-                taskRow.attr('id-task',JSON.stringify(task.id))
-                $('#task-list').prepend(taskRow)
+                        </div>
+                        `)
+                        taskRow.attr('id-task',JSON.stringify(task.id))
+                        taskRow.attr('role', role_show)
+                        $('#task-list').prepend(taskRow)
+                    }
             });
             document.getElementById('task-new').innerText = count_task_number[0] + " Mới";
             document.getElementById('task-process').innerText = count_task_number[1] + " Đang thực hiện";
@@ -429,6 +437,7 @@ function loadTask(){
 function getTask(e){
     let task = $(e).attr('id-task')
     let selectedTask= JSON.parse(task)
+    let role = $(e).attr('role')
     $('#profile-task-dialog').modal({show: true});
     $.ajax({
         type: "GET",
@@ -437,13 +446,18 @@ function getTask(e){
         }),
         success: function(respone) {
             if (respone.code == 0) {
+
                 $('#file-task-profile .task-label').remove();
                 $('#file-task-profile br').remove();
+                $('#file-response-task-profile .task-label').remove();
+                $('#file-response-task-profile br').remove();
                 $('#task-button .btn').remove();
 
                 $('#rating-task-complete').hide();
                 $('#rating-task-div').hide();
                 $('#rating-task-file').hide();
+                $('#submit-task-file').hide();
+                $('#response-task-div').hide();
                 $('#deadline-task-div').show();
                 $('#deadtine-task-div').show();
                 $('#describe-task-div').show();
@@ -456,32 +470,74 @@ function getTask(e){
                 $('#deadline-task-profile').attr("value", respone.data.deadline);
                 $('#deadline-time-task-profile').attr("value", respone.data.deadtime);
                 $('#describe-task-profile').attr("placeholder", respone.data.describ);
-                $('#feedback-task-profile').attr("placeholder", respone.data.feedback);
+                $('#response-task-profile').attr("placeholder", respone.data.feedback);
                 param_value = [respone.data.id, respone.data.file];
 
                 let string = respone.data.file.split('//');
-                if (string.length > 1){
+                let string_2 = respone.data.file_submit.split('//') ;
+
+                if (string.length > 0 && respone.data.file !== ''){
                     $('#file-task-profile').append(`<label class='task-label'>Tệp đính kèm</label><br>`);
                     for ($i = 0; $i < string.length; $i++){
-                        $('#file-task-profile').append(`<a class='task-label' href='task_data/${string[$i]}'>${string[$i]}\n</a><br>`)
+                        $('#file-task-profile').append(`<a class='task-label' style='color: var(--dark-green)'   href='task_data/${string[$i]}'>${string[$i]}\n</a><br>`)
                     }
                 }
+                if (string_2.length > 0  && respone.data.file_submit !== ''){
+                    $('#file-response-task-profile').append(`<label class='task-label'>Tệp submit</label><br>`);
+                    for ($i = 0; $i < string_2.length; $i++){
+                        $('#file-response-task-profile').append(`<a class='task-label' style='color: var(--dark-green)'  href='task_data/${string_2[$i]}'>${string_2[$i]}\n</a><br>`)
+                    }
+                }
+
                 if(respone.data.process === "task-new") {
-                    $('#name-task-profile').removeAttr('disabled');
-                    $('#task-button').append(`<button id='cancel-task-btn' class='btn btn-logout' onclick='cancel_task(${respone.data.id})'>Hủy Bỏ</button>
+                    if (role === ''){
+                        $('#deadline-time-task-profile').removeAttr('disabled');
+                        $('#deadline-task-profile').removeAttr('disabled');
+                        $('#describe-task-profile').removeAttr('disabled');
+                        $('#name-task-profile').removeAttr('disabled');
+                        $('#task-button').append(`<button id='cancel-task-btn' class='btn btn-logout' onclick='cancel_task(${respone.data.id})'>Hủy Bỏ</button>
                         <button id='change-task-btn' class='btn btn-success btn-login' onclick='update_task(${respone.data.id})'>Cập nhật</button>
                     `);
+                    }
+                    else {
+                        if (respone.data.describ === ""){
+                            $('#describe-task-div').hide();
+                        }
+                        $('#task-button').append(`<button id='change-task-btn' class='btn btn-success btn-login'
+                                                         onClick='progress_task(${respone.data.id})'>Nhận tác vụ</button>`
+                        );
+                    }
+                }
+                if(respone.data.process === "task-progress"){
+                    $('#deadline-time-task-profile').attr('disabled','disabled');
+                    $('#deadline-task-profile').attr('disabled','disabled');
+                    $('#describe-task-profile').attr('disabled','disabled');
+                    if (role !== ''){
+                        $('#submit-task-file').show();
+                        $('#response-task-div').show();
+                        $('#task-button').append(`<button id='change-task-btn' class='btn btn-success btn-login'
+                                                         onClick='submit_task(${respone.data.id})'>Gửi tác vụ</button>`
+                        )
+                    }
                 }
                 if(respone.data.process === "task-waiting"){
-                    $('#rating-task-lv').removeAttr('disabled');
-                    $('#rating-task-div').show();
-                    $('#rating-task-complete').show();
-                    $('#rating-task').css('color',"#00563F");
-                    $('#deadline-task-div').hide();
-                    $('#deadtine-task-div').hide();
-                    $('#describe-task-div').hide();
-                    $('#task-button').append(`<button id='rating-task-btn' class='btn btn-success btn-login' onclick='rating_task(param_value)'>Đánh giá</button>
+                    if (respone.data.feedback !== ""){
+                        $('#response-task-div').show();
+                    }
+                    if (respone.data.describ === ""){
+                        $('#describe-task-div').hide();
+                    }
+                    if (role === ''){
+                        $('#rating-task-lv').removeAttr('disabled');
+                        $('#rating-task-div').show();
+                        $('#rating-task-complete').show();
+                        $('#rating-task').css('color',"#00563F");
+                        $('#deadline-task-div').hide();
+                        $('#deadtine-task-div').hide();
+                        $('#describe-task-div').hide();
+                        $('#task-button').append(`<button id='rating-task-btn' class='btn btn-success btn-login' onclick='rating_task(param_value)'>Đánh giá</button>
                     `);
+                    }
                 }
                 if(respone.data.process === "task-complete") {
                     $('#deadline-task-div').hide();
@@ -492,17 +548,64 @@ function getTask(e){
                     $('#rating-task-complete select').val(respone.data.rating);
                 }
                 if(respone.data.process === "task-rejected") {
-
+                    if (respone.data.describ === ""){
+                        $('#describe-task-div').hide();
+                    }
+                    if (role !== ''){
+                        $('#submit-task-file').show();
+                        $('#response-task-div').show();
+                        $('#task-button').append(`<button id='change-task-btn' class='btn btn-success btn-login'
+                                                         onClick='submit_task(${respone.data.id})'>Gửi tác vụ</button>`
+                        )
+                    }
                 }
             }
         }
     });
 }
 
+function submit_task(id){
+    let data = new FormData();
+    data.append("id-task", id);
+    data.append("feedback-task", $('#response-task-profile').val())
+    for ($i = 0; $i < $('#submit-task-response').prop("files").length; $i++){
+        data.append("file-task[]", $('#submit-task-response').prop("files")[$i])
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "./API/submit-task.php", true);
+    xhr.send(data);
+    xhr.onload = function (e){
+        let result = JSON.parse(this.response);
+        if (result.code === 0){
+            $('#profile-task-dialog').modal('toggle');
+            loadTask()
+        }
+        else {
+            $('#add-task-error-profile').html(result.message)
+            $('#add-task-error-profile').fadeIn()
+            $('#add-task-error-profile').fadeOut(3000)
+        }
+    }
+}
+
 function cancel_task(id){
     if (confirm('Thực hiện hủy tác vụ này?')) {
         let data = new FormData();
         data.append("id", id);
+        data.append("process", "task-canceled")
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "./API/cancel-task.php", true);
+        xhr.send(data);
+        $('#profile-task-dialog').modal('toggle');
+        loadTask();
+    }
+}
+
+function progress_task(id){
+    if (confirm('Thực hiện nhận tác vụ này?')) {
+        let data = new FormData();
+        data.append("id", id);
+        data.append("process", "task-progress")
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "./API/cancel-task.php", true);
         xhr.send(data);
@@ -542,7 +645,6 @@ function update_task(id){
 function rating_task(param_value){
     id = param_value[0]
     file_old = param_value[1]
-    alert(file_old)
     let data = new FormData();
     data.append("id-task", id);
     let $rating_choose = $('#rating-task').val();
@@ -599,6 +701,9 @@ function rating_task_check(){
         $('#deadline-task-div').show();
         $('#deadtine-task-div').show();
         $('#describe-task-div').show();
+        $('#deadline-time-task-profile').removeAttr('disabled');
+        $('#deadline-task-profile').removeAttr('disabled');
+        $('#describe-task-profile').removeAttr('disabled');
     }
 }
 

@@ -342,7 +342,7 @@ h1 {
 
 }
 
-.container-fluid .management .management-item .button-notice{
+.button-notice{
     border: 1px solid var(--gray);
     color: var(--dark-green);
     background-color: var(--white-light);
@@ -598,8 +598,6 @@ input[type="file"]{
     width: 100%;
     border-radius: 8px;
 }
-
-
 #dismiss-department-btn {
     margin-top: 15px;
     width: 100%;
@@ -620,4 +618,60 @@ input[type="file"]{
     text-align: center;
     pointer-events: none;
     color: #aaa;
+}
+
+
+/* NAV BAR */
+*{ margin: 0%; }
+@media (max-width: 1000px){
+    .primary-navigation{
+        --gap: 2em;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 30%;
+        right: 0;
+        background: hsl(0 0% 100% / 0.7);
+        z-index: 1000;
+        flex-direction: column;
+        padding: 5rem 2em;
+        backdrop-filter: blur(1rem);
+    }
+    .primary-navigation[data-visible="true"]{
+        transform: translateX(0%);
+    }
+    .primary-navigation[data-visible="false"]{
+        transform: translateX(100%);
+    }
+}
+
+/* The sidenav */
+.sidenav {
+    width: 0;
+    position: absolute;
+    z-index: 1;
+    background: var(--dark-green);
+    color: var(--white);
+    padding-top: 10px;
+    transition:width .7s;
+    -webkit-transition:width .7s;
+    -moz-transition: width .7s;
+    border-radius: 5px;
+    border-right: 1px solid var(--gray);
+    overflow: auto;
+    display:block;
+}
+
+/* The sidenav-item */
+
+.sidenav .closebtn {
+    color: var(--white-light);
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 26px;
+}
+
+.sidenav .closebtn:hover {
+    color: var(--dark-green);
 }

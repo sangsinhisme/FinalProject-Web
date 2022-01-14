@@ -2,22 +2,22 @@
     header(header: 'Content-Type: application/json; charset=utf-8');
     require_once ('../connection.php');
 
-    $name = $_POST['name-task'];
-    $employee = $_POST['employee-task'];
-    $deadline = $_POST['deadline-task'];
-    $deadtime = $_POST['deadtime-task'];
-    $describ= $_POST['describ-task'];
-    $process = $_POST['process-task'];
-    $file_output = "";
+    $id = $_POST['id-task'];
+    $feedback = $_POST['feedback-task'];
+    $file_output = '';
 
-    if(!isset($name) || !isset($employee) || !isset($deadline) || !isset($deadtime) ){
+    if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+        http_response_code(response_code:405);
+        error_response(4, 'This API only supports POST');
+    }
+
+    if(!isset($id)){
         error_response(1, 'Dữ liệu không hợp lệ.');
     }
 
-    if($name === "" || $employee === "" || $deadline === "" || $deadtime === ""){
+    if($id === ""){
         error_response(4, 'Vui lòng nhập đủ thông tin.');
     }
-
 
     if(isset($_FILES['file-task'])){
         $countFiles = count($_FILES['file-task']['name']);
@@ -49,18 +49,17 @@
             }
         }
 
-        }
+    }
 
-    $sql = 'INSERT INTO `task`(`name`, `employee`, `deadline`, `deadtime`, `describ`, `file`, `process`, `feedback`, `file_submit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    $sql = 'UPDATE `task` SET `feedback`=?,`file_submit`=?,`process`=? WHERE id = ?';
 
-    $data = array($name, $employee, $deadline, $deadtime, $describ, $file_output, $process, '', '');
+    $data = array($feedback, $file_output, "task-waiting", $id);
     $stm = $dbCon->prepare($sql);
     $stm->execute($data);
     if ($stm->rowCount() == 1){
-        error_response(0, "Thêm tác vụ thành công");
+        error_response(0, "Gửi tác vụ thành công");
     }
-    error_response(5, "Thêm tác vụ thất bại! Có lỗi xảy ra.");
-
+    error_response(5, "Gửi thất bại! Có lỗi xảy ra.");
 
 
 ?>

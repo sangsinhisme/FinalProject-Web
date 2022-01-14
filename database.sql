@@ -75,6 +75,44 @@ INSERT INTO `department` (`id`, `departmentName`, `description`, `room`, `manage
 (2, 'Kinh doanh', 'bbbbbb', 5, 'tommy');
 
 --
+-- Table structure for table `task`
+--
+
+CREATE TABLE `task` (
+  `id` int(11) NOT NULL,
+  `name` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `employee` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deadline` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `deadtime` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `describ` varchar(300) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `process` varchar(28) COLLATE utf8_unicode_ci NOT NULL,
+  `feedback` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_submit` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `rating` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `task`
+--
+
+INSERT INTO `task` (`id`, `name`, `employee`, `deadline`, `deadtime`, `describ`, `file`, `process`, `feedback`, `file_submit`, `rating`) VALUES
+(1, 'Tác vụ 5', 'Nguyễn Sang Sinh', '2022-03-12', '11:59', 'Từ chối tá', 'Công nhân, tư sản, tiểu tư sản.docx//CHƯƠNG II - Nguyễn Sang Sinh.docx//Untitled.png', 'task-rejected', NULL, NULL, 'Good'),
+(2, 'Làm chức năng thêm', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', 'undefined', 'task-rejected', NULL, NULL, NULL),
+(3, 'Một tác vụ nào đó', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', '', 'task-waiting', NULL, NULL, NULL),
+(4, 'Test', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', '', 'task-canceled', NULL, NULL, NULL),
+(5, 'Tác vụ 5', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', '', 'task-canceled', NULL, NULL, NULL),
+(6, 'Thử', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', '', 'task-complete', NULL, NULL, 'Bad'),
+(7, 'a', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', '', 'task-canceled', NULL, NULL, NULL),
+(8, 'Học tập và làm việc', 'Nguyễn Sang Sinh', '2022-01-22', '11:59', 'Một nội du', '', 'task-new', NULL, NULL, NULL),
+(9, 'Thử thay đổi', 'Nguyễn Sang Sinh', '2022-01-08', '11:59', '', '', 'task-canceled', NULL, NULL, NULL),
+(10, 'Một tác vụ nào đó 2', 'Thạch Thanh Hữu', '2024-06-08', '04:59', '', '191536412_1449087188774301_903634921363629977_n.jpg//182613654_238583281363756_4383219904183266255_n.jpg', 'task-rejected', NULL, NULL, 'Good'),
+(11, 'Một tác vụ nào đó', 'Thạch Thanh Hữu', '2024-07-06', '17:00', '', '191536412_1449087188774301_903634921363629977_n.jpg//182613654_238583281363756_4383219904183266255_n.jpg', 'task-rejected', NULL, NULL, 'Good'),
+(12, 'Tên ', 'Nguyễn Hữu Huy', '2022-01-11', '11:59', '', '', 'task-canceled', NULL, NULL, NULL),
+(13, 'Tên ', 'Nguyễn Hữu Huy', '2022-01-11', '11:59', '', '', 'task-canceled', NULL, NULL, NULL),
+(14, 'Tạo', 'Nguyễn Sang Sinh', '2022-01-11', '11:59', '', '', 'task-canceled', NULL, NULL, NULL);
+
+--
 -- Chỉ mục cho các bảng đã đổ
 --
 
@@ -111,3 +149,23 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+ALTER TABLE `task`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `task`
+--
+ALTER TABLE `task`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

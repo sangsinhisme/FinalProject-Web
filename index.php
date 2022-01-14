@@ -31,14 +31,11 @@ require_once('include/Navbar.php')
 <div style="position: relative;">
     <div class="container-fluid" style="position: absolute; top: 10px ;display: flex; justify-content: center;">
         <div class="management col-lg-2 col-md-3 col-sm-4 col-5">
-            <div class="management-item">
-                <button id="add-task-btn" class="button-add text-center" data-toggle="modal" >Thêm tác vụ</button>
-                <button class="button-notice text-center">Lịch sử hoạt động</button>
-            </div>
+            <button class="button-notice text-center" style="margin-top: 16px; padding: 10px">Nhật ký hoạt động</button>
             <div class="management-item">
                 <a>Tiến độ công việc</a>
                 <div class="task-box">
-                    <span class="dot task-new"></span><a class="task" id="task-new"></a><br>
+                    <span class="dot task-new"></span><a class="task" id="task-new">0 Mới</a><br>
                 </div>
                 <div class="task-box">
                     <span class="dot task-progress"></span><a class="task" id="task-process">0 Đang thực hiện</a><br>
@@ -55,7 +52,7 @@ require_once('include/Navbar.php')
                 <div class="task-box">
                     <span class="dot task-complete"></span><a class="task" id="task-complete">0 Đã hoàn thành</a><br>
                 </div>
-                <div style="display: flex; align-items: center;">
+                <div style="display: flex; align-items: center; display: none" >
                     <span class="dot task-canceled"></span><a class="task" id="task-canceled">0 Đã hủy</a><br>
                 </div>
             </div>
@@ -64,63 +61,7 @@ require_once('include/Navbar.php')
             <div id="task-list" class="right">
             </div>
     </div>
-
 </div>
-
-<div class="modal fade" id="new-task-dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header align-items-center">
-                <h1 class="mt-4 mb-2">Thêm tác vụ mới</h1>
-            </div>
-            <form id="task-form" method="post" class="px-4 px-sm-4 px-m-5 px-lg-4 pt-3" enctype="multipart/form-data" onsubmit="return false;">
-                <div class="renew">
-                    <div class="form-group">
-                        <label class="task-label" for="name-task">Tên tác vụ</label>
-                        <input id="name-task" name="name-task" type="text" class="form-input" placeholder="Nhập tên tác vụ">
-                    </div>
-                    <div class="form-group">
-                        <label class="task-label" for="employee-task">Người thực hiện</label>
-                        <select id="employee-task" name="employee-task" class="form-input" style="padding: 2px 14px">
-                            <optgroup label="Phòng ban Kiểm thử">
-                                <option value="Nguyễn Sang Sinh">Nguyễn Sang Sinh</option>
-                                <option value="Nguyễn Hữu Huy">Nguyễn Hữu Huy</option>
-                                <option value="Thạch Thanh Hữu">Thạch Thanh Hữu</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="task-label" for="deadline-task">Hạn nộp</label>
-                        <input id="deadline-task" name="deadline-task" type="date" class="form-input" value="<?php echo date('Y-m-d'); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label class="task-label" for="deadline-time-task">Thời gian</label>
-                        <input id="deadline-time-task" name="deadline-time-task" type="time" class="form-input" value="11:59">
-                    </div>
-                    <div class="form-group">
-                        <label class="task-label" for="describe-task">Nội dung</label>
-                        <textarea id="describe-task" name="describe-task" rows="2" class="form-input" placeholder="Miêu tả chi tiết" style="height: auto;"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="task-label" for="file-task">Đính kèm tập tin</label>
-                        <input id="file-task" class="form-input" name="file-task" type="file" style="display: inline-flex;text-indent: -130px; padding: 10px 14px;" multiple>
-                    </div>
-                </div>
-                <div id="add-task-error" class='alert-danger' style='text-align: center;margin: 0 23px;display:none'></div>
-                <div id="add-task-success" class='alert-success' style='text-align: center;margin: 0 23px;display:none'></div>
-                <div class="input-group custom-control custom-checkbox">
-                    <div class="custom-button text-right">
-                        <button id="add-task" name="add-task" class="btn btn-success btn-login">Tạo tác vụ</button>
-                    </div>
-                </div>
-            </form>
-            <div class="modal-body">
-
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="modal fade" id="profile-task-dialog">
     <div class="modal-dialog">
@@ -132,7 +73,7 @@ require_once('include/Navbar.php')
                 <div class="renew">
                     <div class="form-group">
                         <label class="task-label" for="name-tas-profilek">Tên tác vụ</label>
-                        <input id="name-task-profile" name="name-task" type="text" class="form-input">
+                        <input id="name-task-profile" name="name-task" type="text" class="form-input" disabled="disabled">
                     </div>
                     <div class="form-group">
                         <label class="task-label" for="employee-task-profile">Trạng thái</label>
@@ -159,21 +100,31 @@ require_once('include/Navbar.php')
                     </div>
                     <div class="form-group" id="deadline-task-div">
                         <label class="task-label" for="deadline-task-profile">Hạn nộp</label>
-                        <input id="deadline-task-profile" name="deadline-task" type="date" class="form-input">
+                        <input id="deadline-task-profile" name="deadline-task" type="date" class="form-input" disabled="disabled">
                     </div>
                     <div class="form-group" id="deadtine-task-div">
                         <label class="task-label" for="deadline-time-task-profile">Thời gian</label>
-                        <input id="deadline-time-task-profile" name="deadline-time-task" type="time" class="form-input">
+                        <input id="deadline-time-task-profile" name="deadline-time-task" type="time" class="form-input" disabled="disabled">
                     </div>
                     <div class="form-group" id="describe-task-div">
                         <label class="task-label" for="describe-task-profile">Nội dung</label>
-                        <textarea id="describe-task-profile" name="describe-task" rows="1" class="form-input"style="height: auto;"></textarea>
+                        <textarea id="describe-task-profile" name="describe-task" rows="1" class="form-input"style="height: auto;" disabled="disabled"></textarea>
                     </div>
                     <div class="form-group" id="rating-task-file">
                         <label class="task-label" for="file-task-response">Đính kèm tệp phản hồi</label>
                         <input id="file-task-response" class="form-input" name="file-task-response" type="file" style="display: inline-flex;text-indent: -130px; padding: 10px 14px;" multiple>
                     </div>
                     <div class="form-group" id="file-task-profile">
+                    </div>
+                    <div class="form-group" id="file-response-task-profile">
+                    </div>
+                    <div class="form-group" id="response-task-div" >
+                        <label class="task-label" for="response-task-profile">Phản hồi</label>
+                        <textarea id="response-task-profile" name="response-task" rows="1" class="form-input"style="height: auto;"></textarea>
+                    </div>
+                    <div class="form-group" id="submit-task-file">
+                        <label class="task-label" for="submit-task-response">Tập tin thực hiện</label>
+                        <input id="submit-task-response" class="form-input" name="submit-task-response" type="file" style="display: inline-flex;text-indent: -130px; padding: 10px 14px;" multiple>
                     </div>
                 </div>
                 <div id="add-task-error-profile" class='alert-danger' style='text-align: center;margin: 0 23px;display:none'></div>

@@ -13,7 +13,7 @@
 
     $id = $_GET['id'];
 
-    $sql = 'SELECT `id`, `name`, `employee`, `deadline`, `deadtime`, `describ`, `file`, `process`, `feedback`, `rating` FROM `task` WHERE id = ?';
+    $sql = 'SELECT `id`, `name`, `employee`, `deadline`, `deadtime`, `describ`, `file`, `process`, `feedback`, `rating`, `file_submit` FROM `task` WHERE id = ?';
 
     try{
         $stmt = $dbCon->prepare($sql);
